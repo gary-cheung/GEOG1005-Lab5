@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North District Population Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --grid-color: rgba(0, 0, 0, 0.1);
+            --chart-border: #5D5CDE;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: #ffffff !important; /* Force white background */
+            color: #333333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff; /* Explicit white background */
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 60vh;
+            width: 100%;
+            margin-bottom: 20px;
+            background-color: #ffffff; /* Ensure chart container is white */
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            color: #333333;
+        }
+        
+        .source {
+            text-align: right;
+            font-style: italic;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            opacity: 0.8;
+            color: #333333;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.2rem;
+            }
+            
+            .chart-container {
+                height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>North District Population from 2001 to 2021</h1>
+        <div class="chart-container">
+            <canvas id="populationChart"></canvas>
+        </div>
+        <div class="source">Source: Hong Kong Population Census</div>
+    </div>
+
+    <script>
+        const years = [2001, 2006, 2011, 2016, 2021];
+        const population = [298657, 280730, 304134, 315270, 309631];
+        
+        let chart;
+        
+        function updateChart() {
+            const gridColor = 'rgba(0, 0, 0, 0.1)';
+            const textColor = '#333333';
+            
+            if (chart) {
+                chart.destroy();
+            }
+            
+            const ctx = document.getElementById('populationChart').getContext('2d');
+            
+            // Set canvas background color explicitly to white
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Population',
+                        data: population,
+                        borderColor: '#5D5CDE',
+                        backgroundColor: 'rgba(93, 92, 222, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#5D5CDE',
+                        tension: 0.2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 250000,
+                            grid: {
+                                color: gridColor
+                            },
+                            ticks: {
+                                color: textColor,
+                                callback: function(value) {
+                                    return new Intl.NumberFormat().format(value);
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Population',
+                                color: textColor,
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: gridColor
+                            },
+                            ticks: {
+                                color: textColor
+                            },
+                            title: {
+                                display: true,
+                                text: 'Year',
+                                color: textColor,
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Population: ' + new Intl.NumberFormat().format(context.raw);
+                                }
+                            },
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#333333',
+                            bodyColor: '#333333',
+                            borderColor: '#5D5CDE',
+                            borderWidth: 1
+                        },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 300000,
+                                    yMax: 300000,
+                                    borderColor: 'rgba(93, 92, 222, 0.3)',
+                                    borderWidth: 1,
+                                    borderDash: [5, 5]
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize chart
+        window.onload = updateChart;
+    </script>
+</body>
+</html>
