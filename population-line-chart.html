@@ -13,25 +13,19 @@
             --chart-border: #5D5CDE;
         }
         
-        .dark {
-            --bg-color: #181818;
-            --text-color: #f5f5f5;
-            --grid-color: rgba(255, 255, 255, 0.1);
-        }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             margin: 0;
             padding: 16px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
+            background-color: #ffffff !important; /* Force white background */
+            color: #333333;
         }
         
         .container {
             max-width: 900px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #ffffff; /* Explicit white background */
         }
         
         .chart-container {
@@ -39,12 +33,14 @@
             height: 60vh;
             width: 100%;
             margin-bottom: 20px;
+            background-color: #ffffff; /* Ensure chart container is white */
         }
         
         h1 {
             text-align: center;
             margin-bottom: 24px;
             font-size: 1.5rem;
+            color: #333333;
         }
         
         .source {
@@ -53,6 +49,7 @@
             font-size: 0.9rem;
             margin-top: 10px;
             opacity: 0.8;
+            color: #333333;
         }
 
         @media (max-width: 600px) {
@@ -76,35 +73,24 @@
     </div>
 
     <script>
-        // Detect dark mode
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-        }
-        
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            if (event.matches) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-            updateChart();
-        });
-        
         const years = [2001, 2006, 2011, 2016, 2021];
         const population = [298657, 280730, 304134, 315270, 309631];
         
         let chart;
         
         function updateChart() {
-            const isDarkMode = document.documentElement.classList.contains('dark');
-            const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--grid-color');
-            const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+            const gridColor = 'rgba(0, 0, 0, 0.1)';
+            const textColor = '#333333';
             
             if (chart) {
                 chart.destroy();
             }
             
             const ctx = document.getElementById('populationChart').getContext('2d');
+            
+            // Set canvas background color explicitly to white
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             
             chart = new Chart(ctx, {
                 type: 'line',
@@ -175,7 +161,12 @@
                                 label: function(context) {
                                     return 'Population: ' + new Intl.NumberFormat().format(context.raw);
                                 }
-                            }
+                            },
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#333333',
+                            bodyColor: '#333333',
+                            borderColor: '#5D5CDE',
+                            borderWidth: 1
                         },
                         annotation: {
                             annotations: {
